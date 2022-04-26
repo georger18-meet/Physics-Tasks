@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 public class ProjectileMotion : MonoBehaviour
 {
     public GameObject StartPanel;
+    public GameObject TimeScaleSlider;
     public GameObject TrackingPanel;
+    public Text TimeScaleText;
     public Text GravityAccelerationText, InitialVelocityText, InitialHeightText, LaunchAngleText, LaunchDegreeText;
     public Text InitialVelocityVxText, InitialVelocityVyText, TimeOfFlightText, TotalDistanceText, MaximumHeightText, CurrentHeightText, CurrentDistanceText, CurrentAngleText, CurrentTimeText;
 
@@ -29,6 +31,8 @@ public class ProjectileMotion : MonoBehaviour
     private float _currentDistance;
     private float _currentAngle;
     private float _currentTime;
+
+    private float _timeScaleVal;
 
     private bool _settingUpSimulation = true;
     private bool _ranSim = false;
@@ -139,19 +143,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateAngle()
     {
-        //Vector2 tempV2 = new Vector2(_currentVelocityVx,_currentVelocityVy).normalized;
-        //float tempAngle = tempV2.y * Mathf.Rad2Deg;
-
-        //if (tempAngle > 0)
-        //{
-        //    _currentAngle = tempAngle + 5;
-        //}
-        //else
-        //{
-        //    _currentAngle = tempAngle - 5;
-        //}
-
-        _currentAngle = LaunchAngle * 2 - Mathf.Atan2(_currentVelocityVx, _currentVelocityVy) * Mathf.Rad2Deg;
+        _currentAngle = 90 - Mathf.Atan2(_currentVelocityVx, _currentVelocityVy) * Mathf.Rad2Deg;
     }
 
 
@@ -183,6 +175,13 @@ public class ProjectileMotion : MonoBehaviour
         CurrentTimeText.text = "Current Time: " + _currentTime + "s";
     }
 
+    private void RefreshTimeScaleText(float tScale)
+    {
+        Time.timeScale = tScale;
+        _timeScaleVal = tScale;
+        TimeScaleText.text = _timeScaleVal.ToString("F2") + "x";
+    }
+
     private void RefreshArrowVisuals()
     {
         Arrow.transform.position = new Vector3(_currentDistance, _currentHeight, 0);
@@ -193,6 +192,7 @@ public class ProjectileMotion : MonoBehaviour
     // ---------------
     public void StartSim()
     {
+        TimeScaleSlider.transform.SetParent(TimeScaleSlider.transform.parent.parent);
         StartPanel.SetActive(false);
         TrackingPanel.SetActive(true);
         _settingUpSimulation = false;
@@ -200,6 +200,7 @@ public class ProjectileMotion : MonoBehaviour
 
     public void Restart()
     {
+        RefreshTimeScaleText(1f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -229,5 +230,10 @@ public class ProjectileMotion : MonoBehaviour
     public void InputH(string s)
     {
         InitialHeight = float.Parse(s);
+    }
+
+    public void TimeScaleInput(float t)
+    {
+        RefreshTimeScaleText(t);
     }
 }
