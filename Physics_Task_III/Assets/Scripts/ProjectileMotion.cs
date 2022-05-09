@@ -22,11 +22,12 @@ public class ProjectileMotion : MonoBehaviour
 
     // External Factors Start
     [Header("External Factors")]
+    public Text WindVelocityText;
     public Text WindAngleText;
     public GameObject WindAngleIndicator;
     [Range(0, 360)]
     public int WindAngle = 0;
-    public float WindVelocity = 1;
+    public float WindVelocity = 0;
 
     private float _windVelocityVx;
     private float _windVelocityVy;
@@ -83,7 +84,7 @@ public class ProjectileMotion : MonoBehaviour
                 RefreshCurrentTextOnce();
 
                 // External Factors
-                CalculateWindVxVy();
+                //CalculateWindVxVy();
                 _ranSim = true;
             }
 
@@ -102,21 +103,22 @@ public class ProjectileMotion : MonoBehaviour
     // ---------------
     private void CalculateInitialVxVy()
     {
+        CalculateWindVxVy();
         if (LaunchAngle == 90)
         {
             _initVelocityVx = 0;
         }
         else
         {
-            _initVelocityVx = InitialVelocity * Mathf.Cos(LaunchAngle * Mathf.Deg2Rad);
+            _initVelocityVx = InitialVelocity * Mathf.Cos(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVx;
         }
-        _initVelocityVy = InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad);
+        _initVelocityVy = InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy;
     }
 
     private void CalculateTotalTime()
     {
-        float sqrtpart = Mathf.Abs(((InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad)) * (InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad))) + 2 * GravityAcceleration * InitialHeight);
-        _timeOfFlight = (InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + Mathf.Sqrt(sqrtpart)) / GravityAcceleration;
+        float sqrtpart = Mathf.Abs(((InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy) * (InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy)) + 2 * GravityAcceleration * InitialHeight);
+        _timeOfFlight = (InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy + Mathf.Sqrt(sqrtpart)) / GravityAcceleration;
     }
 
     private void CalculateTotalDistance()
@@ -126,7 +128,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateMaxHeight()
     {
-        _maxHeight = InitialHeight + (InitialVelocity * InitialVelocity) * (Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad)) / (2 * GravityAcceleration);
+        _maxHeight = InitialHeight + (_initVelocityVy * _initVelocityVy)/*(InitialVelocity * InitialVelocity) * (Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad))*/ / (2 * GravityAcceleration);
     }
 
     private void CalculateCurrentTime()
@@ -143,13 +145,13 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateCurrentVxVy()
     {
-        _currentVelocityVx = InitialVelocity * Mathf.Cos(LaunchAngle * Mathf.Deg2Rad);
-        _currentVelocityVy = InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) - GravityAcceleration * _currentTime;
+        _currentVelocityVx = _initVelocityVx;
+        _currentVelocityVy = _initVelocityVy - GravityAcceleration * _currentTime;
     }
 
     private void CalculateCurrentHeight()
     {
-        _currentHeight = InitialHeight + InitialVelocity * _currentTime * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) - GravityAcceleration / 2 * (_currentTime * _currentTime);
+        _currentHeight = InitialHeight + _initVelocityVy * _currentTime - GravityAcceleration / 2 * (_currentTime * _currentTime);
         if (_currentHeight < 0)
         {
             _currentHeight = 0;
@@ -158,7 +160,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateCurrentDistance()
     {
-        _currentDistance = InitialVelocity * _currentTime * Mathf.Cos(LaunchAngle * Mathf.Deg2Rad);
+        _currentDistance = _initVelocityVx * _currentTime;
     }
 
     private void CalculateAngle()
@@ -198,6 +200,7 @@ public class ProjectileMotion : MonoBehaviour
         LaunchDegreeText.text = _currentAngle + "°";
 
         // External Factors
+        WindVelocityText.text = "Wind Velocity: " + WindVelocity + "m/s";
         WindAngleText.text = "Wind Angle: " + WindAngle + "°";
     }
 
@@ -268,10 +271,6 @@ public class ProjectileMotion : MonoBehaviour
     {
         LaunchAngle = (int)d;
     }
-    public void WindAngleInput(float d)
-    {
-        WindAngle = (int)d;
-    }
     public void InputG(string s)
     {
         GravityAcceleration = float.Parse(s);
@@ -279,11 +278,26 @@ public class ProjectileMotion : MonoBehaviour
     public void InputV(string s)
     {
         InitialVelocity = float.Parse(s);
-    }
+    }    
     public void InputH(string s)
     {
         InitialHeight = float.Parse(s);
     }
+
+    // External Factors
+    public void WindAngleInput(float d)
+    {
+        WindAngle = (int)d;
+    }    
+    public void WindAngleInput(string s)
+    {
+        WindAngle = int.Parse(s);
+    }
+    public void InputWindV(string s)
+    {
+        WindVelocity = float.Parse(s);
+    }
+
 
     public void TimeScaleInput(float t)
     {
