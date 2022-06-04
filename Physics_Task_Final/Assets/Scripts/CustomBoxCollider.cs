@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class CustomBoxCollider : MonoBehaviour
 {
-    public bool UseSpriteForSize;
     public bool DetectCollision = true;
-    public bool IsTrigger;
+    public bool WasTriggered;
+    public CustomBoxCollider ObjCollidedWithRef;
     public Vector3 ColliderOffset;
     public Vector3 ColliderSize = new Vector3(1, 1, 1);
+
+    private CollisionsManager collisionsManagerRef;
 
     //// Box Collider Edges List
     // Cube Corner Transform Front
@@ -82,10 +84,7 @@ public class CustomBoxCollider : MonoBehaviour
 
     private void Awake()
     {
-        if (TryGetComponent(out SpriteRenderer theSprite) && UseSpriteForSize)
-        {
-            ColliderSize = new Vector3(theSprite.size.x, theSprite.size.y, 1);
-        }
+        collisionsManagerRef = FindObjectOfType<CollisionsManager>();
     }
 
     // Start is called before the first frame update
@@ -98,6 +97,7 @@ public class CustomBoxCollider : MonoBehaviour
     void Update()
     {
         BoxColliderEdges(ColliderOffset + transform.position);
+        CheckCollisionsWithThisObj();
     }
 
 
@@ -158,6 +158,32 @@ public class CustomBoxCollider : MonoBehaviour
         _backTopLeft.y = positionInV3.y + colliderSizeHalfY;
         _backTopLeft.z = positionInV3.z + colliderSizeHalfZ;
         //Debug.Log($"{gameObject.name} BTL:{_backTopLeft}");
+    }
+
+
+    private void CheckCollisionsWithThisObj()
+    {
+        bool tempTrigger = false;
+        foreach (var boxCollider in collisionsManagerRef.boxCollidersList)
+        {
+            if (!boxCollider.Equals(this))
+            {
+                if (collisionsManagerRef.CollisionCheck(this, boxCollider))
+                {
+                    if (!tempTrigger)
+                    {
+                        ObjCollidedWithRef = boxCollider;
+                    }
+                    tempTrigger = true;
+                }
+            }
+        }
+        WasTriggered = tempTrigger;
+
+        if (!WasTriggered)
+        {
+            ObjCollidedWithRef = null;
+        }
     }
 
 

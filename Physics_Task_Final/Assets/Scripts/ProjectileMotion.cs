@@ -328,7 +328,7 @@ public class ProjectileMotion : MonoBehaviour
     {
         if (!_targetSet)
         {
-            _targetDistance = Random.Range(0, MaxDistanceRange + 1);
+            _targetDistance = Random.Range(5, MaxDistanceRange + 1);
             Vector3 targetDest = new Vector3(_targetDistance, 0, 0) + TargetOffset;
             Target.transform.position = targetDest;
             _targetSet = true;
@@ -337,7 +337,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void DidItHit()
     {
-        if (MiniGameMode && _reachedEndOfFlight && _currentDistance >= _targetDistance - 3 && _currentDistance <= _targetDistance + 3)
+        if (MiniGameMode && _reachedEndOfFlight && Arrow.GetComponent<CustomBoxCollider>().WasTriggered && Arrow.GetComponent<CustomBoxCollider>().ObjCollidedWithRef.gameObject == Target)
         {
             TargetHitWin = true;
             WinPanel.SetActive(true);
@@ -350,6 +350,20 @@ public class ProjectileMotion : MonoBehaviour
             WinText.color = Color.red;
             WinText.text = "GIT GUD";
         }
+
+        //if (MiniGameMode && _reachedEndOfFlight && _currentDistance >= _targetDistance - 3 && _currentDistance <= _targetDistance + 3)
+        //{
+        //    TargetHitWin = true;
+        //    WinPanel.SetActive(true);
+        //    WinText.color = Color.green;
+        //    WinText.text = "MATH WIZARD!?";
+        //}
+        //else if (MiniGameMode && _reachedEndOfFlight && !TargetHitWin)
+        //{
+        //    WinPanel.SetActive(true);
+        //    WinText.color = Color.red;
+        //    WinText.text = "GIT GUD";
+        //}
     }
 
 

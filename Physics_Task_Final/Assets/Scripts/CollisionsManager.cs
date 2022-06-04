@@ -4,23 +4,36 @@ using UnityEngine;
 
 public class CollisionsManager : MonoBehaviour
 {
-    public CustomBoxCollider box1;
-    public CustomBoxCollider box2;
+    public static CollisionsManager instance;
+
+    public CustomBoxCollider[] boxCollidersList;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        boxCollidersList = FindObjectsOfType<CustomBoxCollider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(CollisionCheck(box1, box2));
+
     }
 
     // Collisen Checker Method
-    public static bool CollisionCheck(CustomBoxCollider CBC1, CustomBoxCollider CBC2)
+    public bool CollisionCheck(CustomBoxCollider CBC1, CustomBoxCollider CBC2)
     {
         bool isCollision = false;
 
@@ -70,7 +83,19 @@ public class CollisionsManager : MonoBehaviour
                 }
             }
             // Checking Collision Sequence #4
-
+            else if (CBC2.BTR.x >= CBC1.FBL.x && CBC2.BTR.y >= CBC1.FBL.y && CBC2.BTL.x <= CBC1.FTL.x && CBC2.FTL.y <= CBC1.FTL.y)
+            {
+                if (CBC2.BBR.z >= CBC1.FTL.z && CBC1.FTL.z >= CBC2.FBR.z)
+                {
+                    Debug.Log("FBLtoBTR");
+                    isCollision = true;
+                }
+                else if (CBC2.BBR.z >= CBC1.BTL.z && CBC1.BTL.z >= CBC2.FBR.z)
+                {
+                    Debug.Log("BBLtoFTR");
+                    isCollision = true;
+                }
+            }
         }
 
         return isCollision;
