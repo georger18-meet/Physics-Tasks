@@ -55,6 +55,22 @@ public class CollisionsManager : MonoBehaviour
                     isCollision = true;
                 }
             }
+            // Checking Collision Sequence #3
+            else if (CBC2.BBR.x >= CBC1.FTL.x && CBC2.FBR.y <= CBC1.FTL.y && CBC2.BTL.x <= CBC1.FTL.x && CBC2.FTL.y >= CBC1.FTL.y)
+            {
+                if (CBC2.BBR.z >= CBC1.FTL.z && CBC1.FTL.z >= CBC2.FBR.z)
+                {
+                    Debug.Log("FTLtoBBR");
+                    isCollision = true;
+                }
+                else if (CBC2.BBR.z >= CBC1.BTL.z && CBC1.BTL.z >= CBC2.FBR.z)
+                {
+                    Debug.Log("BTLtoFBR");
+                    isCollision = true;
+                }
+            }
+            // Checking Collision Sequence #4
+
         }
 
         return isCollision;
