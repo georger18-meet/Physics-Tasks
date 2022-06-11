@@ -1075,7 +1075,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &154731815
 Transform:
   m_ObjectHideFlags: 0
@@ -3494,7 +3494,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DetectCollision: 1
-  IsTrigger: 0
+  WasTriggered: 0
+  ObjCollidedWithRef: {fileID: 0}
   ColliderOffset: {x: 0, y: 0, z: 0}
   ColliderSize: {x: 6, y: 1, z: 6}
 --- !u!1 &1034396097
@@ -5480,7 +5481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1649423995
 Transform:
   m_ObjectHideFlags: 0
@@ -6370,7 +6371,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DetectCollision: 1
-  IsTrigger: 0
+  WasTriggered: 0
+  ObjCollidedWithRef: {fileID: 0}
   ColliderOffset: {x: 0, y: 0, z: 0}
   ColliderSize: {x: 1, y: 1, z: 1}
 --- !u!1 &2034282769
