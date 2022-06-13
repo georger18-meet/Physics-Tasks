@@ -1075,7 +1075,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &154731815
 Transform:
   m_ObjectHideFlags: 0
@@ -4383,7 +4383,7 @@ MonoBehaviour:
   Target: {fileID: 1011581953}
   WinPanel: {fileID: 1170259003}
   TargetOffset: {x: 0.5, y: 0, z: 0}
-  MaxDistanceRange: 20
+  MaxDistanceRange: 5
   TargetHitWin: 0
 --- !u!114 &1487324473
 MonoBehaviour:
@@ -5481,7 +5481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1649423995
 Transform:
   m_ObjectHideFlags: 0
@@ -6373,8 +6373,8 @@ MonoBehaviour:
   DetectCollision: 1
   WasTriggered: 0
   ObjCollidedWithRef: {fileID: 0}
-  ColliderOffset: {x: 0, y: 0, z: 0}
-  ColliderSize: {x: 1, y: 1, z: 1}
+  ColliderOffset: {x: 0.65, y: 0, z: 0}
+  ColliderSize: {x: 0.5, y: 0.5, z: 1}
 --- !u!1 &2034282769
 GameObject:
   m_ObjectHideFlags: 0
