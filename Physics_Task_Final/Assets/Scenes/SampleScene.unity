@@ -971,8 +971,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 134282663}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49900, y: 5000, z: 4}
-  m_LocalScale: {x: 10000, y: 1000, z: 0.5}
+  m_LocalPosition: {x: 49900, y: 25000, z: 4}
+  m_LocalScale: {x: 10000, y: 5000, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -1085,7 +1085,7 @@ Transform:
   m_GameObject: {fileID: 154731814}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 500, y: 500, z: 1}
+  m_LocalScale: {x: 750, y: 750, z: 1}
   m_Children: []
   m_Father: {fileID: 2023472045}
   m_RootOrder: 1
@@ -1516,6 +1516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 249631762}
   - component: {fileID: 249631761}
+  - component: {fileID: 249631759}
   m_Layer: 0
   m_Name: TrackerCamera
   m_TagString: Untagged
@@ -1523,6 +1524,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &249631759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249631758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e00ea7c393c8fa3408b3e4e1c014820b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjToFollow: {fileID: 2023472044}
+  Offset: {x: 0, y: 0, z: -10}
+  IsTrackingCam: 1
+  FollowAfterX: 9800
+  FollowAfterY: 4800
 --- !u!20 &249631761
 Camera:
   m_ObjectHideFlags: 0
@@ -1574,7 +1592,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 249631758}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4900, y: 2450, z: -10}
+  m_LocalPosition: {x: 4900, y: 2400, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2327,8 +2345,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595599784}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49900, y: 5000, z: 2}
-  m_LocalScale: {x: 100000, y: 10000, z: 0.5}
+  m_LocalPosition: {x: 49900, y: 25000, z: 2}
+  m_LocalScale: {x: 100000, y: 50000, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -2655,8 +2673,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 644167937}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49900, y: -50, z: 1}
-  m_LocalScale: {x: 100000, y: 100, z: 0.5}
+  m_LocalPosition: {x: 49900, y: -500, z: 1}
+  m_LocalScale: {x: 100000, y: 1000, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -3433,6 +3451,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ObjToFollow: {fileID: 2023472044}
   Offset: {x: 0, y: 1, z: -10}
+  IsTrackingCam: 0
+  FollowAfterX: 0
+  FollowAfterY: 0
 --- !u!1 &1011581953
 GameObject:
   m_ObjectHideFlags: 0
@@ -5476,7 +5497,7 @@ Transform:
   m_GameObject: {fileID: 1649423994}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 100, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_LocalScale: {x: 150, y: 150, z: 1}
   m_Children: []
   m_Father: {fileID: 1011581955}
   m_RootOrder: 1
@@ -6035,8 +6056,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1807285930}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.1, y: 2500, z: 1.5}
-  m_LocalScale: {x: 20, y: 5000, z: 0.5}
+  m_LocalPosition: {x: -52.5, y: 2500, z: 1.5}
+  m_LocalScale: {x: 100, y: 5000, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
