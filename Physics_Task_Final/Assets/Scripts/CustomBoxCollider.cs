@@ -87,12 +87,6 @@ public class CustomBoxCollider : MonoBehaviour
         collisionsManagerRef = FindObjectOfType<CollisionsManager>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -101,77 +95,95 @@ public class CustomBoxCollider : MonoBehaviour
     }
 
 
-    // Method For PinPointing The Transform of the Box Collider's Edges
+    // Method For PinPointing The Transform of the Box Collider's Edges In World Space
     public void BoxColliderEdges(Vector3 positionInV3)
     {
-        //// Clearing The List
-        //BCEdges.Clear();
-
-        float colliderSizeHalfX = ColliderSize.x / 2;
-        float colliderSizeHalfY = ColliderSize.y / 2;
-        float colliderSizeHalfZ = ColliderSize.z / 2;
-
         // FTR Location
-        _frontTopRight.x = positionInV3.x + colliderSizeHalfX;
-        _frontTopRight.y = positionInV3.y + colliderSizeHalfY;
-        _frontTopRight.z = positionInV3.z - colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} FTR:{_frontTopRight}");
+        _frontTopRight = SingleEdgeCollision(positionInV3, _frontTopRight, "+", "+", "-");
 
         // FBR Location
-        _frontBottomRight.x = positionInV3.x + colliderSizeHalfX;
-        _frontBottomRight.y = positionInV3.y - colliderSizeHalfY;
-        _frontBottomRight.z = positionInV3.z - colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} FBR:{_frontBottomRight}");
+        _frontBottomRight = SingleEdgeCollision(positionInV3, _frontBottomRight, "+", "-", "-");
 
         // FBL Location
-        _frontBottomLeft.x = positionInV3.x - colliderSizeHalfX;
-        _frontBottomLeft.y = positionInV3.y - colliderSizeHalfY;
-        _frontBottomLeft.z = positionInV3.z - colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} FBL:{_frontBottomLeft}");
+        _frontBottomLeft = SingleEdgeCollision(positionInV3, _frontBottomLeft, "-", "-", "-");
 
         // FTL Location
-        _frontTopLeft.x = positionInV3.x - colliderSizeHalfX;
-        _frontTopLeft.y = positionInV3.y + colliderSizeHalfY;
-        _frontTopLeft.z = positionInV3.z - colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} FTL:{_frontTopLeft}");
+        _frontTopLeft = SingleEdgeCollision(positionInV3, _frontTopLeft, "-", "+", "-");
 
         // BTR Location
-        _backTopRight.x = positionInV3.x + colliderSizeHalfX;
-        _backTopRight.y = positionInV3.y + colliderSizeHalfY;
-        _backTopRight.z = positionInV3.z + colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} BTR:{_backTopRight}");
+        _backTopRight = SingleEdgeCollision(positionInV3, _backTopRight, "+", "+", "+");
 
         // BBR Location
-        _backBottomRight.x = positionInV3.x + colliderSizeHalfX;
-        _backBottomRight.y = positionInV3.y - colliderSizeHalfY;
-        _backBottomRight.z = positionInV3.z + colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} BBR:{_backBottomRight}");
+        _backBottomRight = SingleEdgeCollision(positionInV3, _backBottomRight, "+", "-", "+");
 
         // BBL Location
-        _backBottomLeft.x = positionInV3.x - colliderSizeHalfX;
-        _backBottomLeft.y = positionInV3.y - colliderSizeHalfY;
-        _backBottomLeft.z = positionInV3.z + colliderSizeHalfZ;
-        //Debug.Log($"{gameObject.name} BBL:{_backBottomLeft}");
+        _backBottomLeft = SingleEdgeCollision(positionInV3, _backBottomLeft, "-", "-", "+");
 
         // BTL Location
-        _backTopLeft.x = positionInV3.x - colliderSizeHalfX;
-        _backTopLeft.y = positionInV3.y + colliderSizeHalfY;
-        _backTopLeft.z = positionInV3.z + colliderSizeHalfZ;
+        _backTopLeft = SingleEdgeCollision(positionInV3, _backTopLeft, "-", "+", "+");
+
+
+        //Debug.Log($"{gameObject.name} FTR:{_frontTopRight}");
+        //Debug.Log($"{gameObject.name} FBR:{_frontBottomRight}");
+        //Debug.Log($"{gameObject.name} FBL:{_frontBottomLeft}");
+        //Debug.Log($"{gameObject.name} FTL:{_frontTopLeft}");
+        //Debug.Log($"{gameObject.name} BTR:{_backTopRight}");
+        //Debug.Log($"{gameObject.name} BBR:{_backBottomRight}");
+        //Debug.Log($"{gameObject.name} BBL:{_backBottomLeft}");
         //Debug.Log($"{gameObject.name} BTL:{_backTopLeft}");
+    }
+
+    private Vector3 SingleEdgeCollision(Vector3 positionInV3 ,Vector3 edge, string xOperation, string yOperation, string zOperation)
+    {
+        // Finding Edge xPos In World
+        if (xOperation == "+")
+        {
+            edge.x = positionInV3.x + (ColliderSize.x / 2);
+        }
+        else
+        {
+            edge.x = positionInV3.x - (ColliderSize.x / 2);
+        }
+
+        // Finding Edge yPos In World
+        if (yOperation == "+")
+        {
+            edge.y = positionInV3.y + (ColliderSize.y / 2);
+        }
+        else
+        {
+            edge.y = positionInV3.y - (ColliderSize.y / 2);
+        }
+
+        // Finding Edge zPos In World
+        if (zOperation == "+")
+        {
+            edge.z = positionInV3.z + (ColliderSize.z / 2);
+        }
+        else
+        {
+            edge.z = positionInV3.z - (ColliderSize.z / 2);
+        }
+
+        return edge;
     }
 
 
     private void CheckCollisionsWithThisObj()
     {
         bool tempTrigger = false;
+        // Loop Through All Objects With Custom Collider
         foreach (var boxCollider in collisionsManagerRef.boxCollidersList)
         {
+            // Skip If The Collider Is "This"
             if (!boxCollider.Equals(this))
             {
+                // Run The Collision Check Method
                 if (collisionsManagerRef.CollisionCheck(this, boxCollider))
                 {
                     if (!tempTrigger)
                     {
+                        // Set Obj Collided With Ref
                         ObjCollidedWithRef = boxCollider;
                     }
                     tempTrigger = true;
@@ -180,6 +192,7 @@ public class CustomBoxCollider : MonoBehaviour
         }
         WasTriggered = tempTrigger;
 
+        // Reset Obj Collided With Ref If Collision Wasn't Triggered
         if (!WasTriggered)
         {
             ObjCollidedWithRef = null;
