@@ -66,9 +66,11 @@ public class ProjectileMotion : MonoBehaviour
     private bool _ranSim = false;
     private bool _reachedEndOfFlight;
 
+
     // Start is called before the first frame update
     void Start()
     {
+        // Setting The Slider UI & WinPanel False
         LaunchDegreeText.transform.parent.GetComponent<Slider>().value = LaunchAngle;
         WinPanel.SetActive(false);
     }
@@ -76,21 +78,28 @@ public class ProjectileMotion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Checking If MiniGame Or PlayGround
         CheckGameMode();
+
+        // Keeps Running While Setting Up Simulation Parameters (Gravity, Velocity, Angle, etc...)
         if (_settingUpSimulation)
         {
+            // Refreshing Arrow Location According To LaunchAngle & InitialHeight
             _currentAngle = LaunchAngle;
             Arrow.transform.rotation = Quaternion.Euler(0, 0, _currentAngle);
             _currentHeight = InitialHeight;
             Arrow.transform.position = new Vector3(0, _currentHeight, 0);
+            
+            // Refreshing Initial Values UI
             RefreshInitText();
 
             // External Factors
             RefreshWindIndicator();
         }
+        // Keeps Running After Clicking The 'Start' Button On The Sim
         else
         {
-            // Run Once Started
+            // Run Only Once When Sim Is Started (Variables To Calculate ONCE)
             if (!_ranSim)
             {
                 CalculateInitialVxVy();
@@ -99,12 +108,10 @@ public class ProjectileMotion : MonoBehaviour
                 CalculateMaxHeight();
                 RefreshCurrentTextOnce();
 
-                // External Factors
-                //CalculateWindVxVy();
                 _ranSim = true;
             }
 
-            // Keep Running After Start
+            // Keep Running After Start (Variables To Calculate As Long As The Arrow Is Flying)
             CalculateCurrentTime();
             CalculateCurrentVxVy();
             CalculateCurrentHeight();
@@ -113,6 +120,7 @@ public class ProjectileMotion : MonoBehaviour
             RefreshCurrentTextAlways();
             RefreshArrowVisuals();
 
+            // Ending & Winning Checkers
             CheckReachedEnd();
             DidItHit();
         }
@@ -122,7 +130,10 @@ public class ProjectileMotion : MonoBehaviour
     // ---------------
     private void CalculateInitialVxVy()
     {
+        // Calculate Wind VxVy First To Add To InitVelocity
         CalculateWindVxVy();
+
+        // Calculating InitVx -- OGFormula: Vx = V * cos(a)
         if (LaunchAngle == 90)
         {
             _initVelocityVx = 0;
@@ -131,12 +142,17 @@ public class ProjectileMotion : MonoBehaviour
         {
             _initVelocityVx = InitialVelocity * Mathf.Cos(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVx;
         }
+
+        // Calculating InitVy -- OGFormula: Vy = V * sin(a)
         _initVelocityVy = InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy;
     }
 
     private void CalculateTotalTime()
     {
+        // Calculating The SquareRoot Part Separately
         float sqrtpart = Mathf.Abs(((InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy) * (InitialVelocity * Mathf.Sin(LaunchAngle * Mathf.Deg2Rad) + _windVelocityVy)) + 2 * GravityAcceleration * InitialHeight);
+
+        // Time Of Flight Math -- OGFormula: t = [V? * sin(?) + ?((V? * sin(?))² + 2 * g * h)] / g
         if (LaunchAngle == 0 && GravityAcceleration == 0)
         {
             _timeOfFlight = float.PositiveInfinity;
@@ -149,11 +165,13 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateTotalDistance()
     {
+        // Calculating Total X Distance -- OGFormula: x = Vx * t
         _totalDistance = _initVelocityVx * _timeOfFlight;
     }
 
     private void CalculateMaxHeight()
     {
+        // Calculating Max Height On Y Axes -- OGFormula: hMax = hStart + Vy² / 2g
         if (LaunchAngle == 0 && GravityAcceleration == 0)
         {
             _maxHeight = InitialHeight;
@@ -166,6 +184,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateCurrentTime()
     {
+        // Calculating Current Time
         if (_currentTime < _timeOfFlight)
         {
             _currentTime += Time.deltaTime;
@@ -178,12 +197,16 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateCurrentVxVy()
     {
+        // Calculating Current VxVy
+        // Vx Is Constant Since No External Factors Affect It (Acceleration = 0)
         _currentVelocityVx = _initVelocityVx;
+        // Vy Is Affected By Gravity Across Time
         _currentVelocityVy = _initVelocityVy - GravityAcceleration * _currentTime;
     }
 
     private void CalculateCurrentHeight()
     {
+        // Calculating Current Height On Y -- OGFormula: y = Vy * t - g / 2 * t²
         _currentHeight = InitialHeight + _initVelocityVy * _currentTime - GravityAcceleration / 2 * (_currentTime * _currentTime);
         if (_currentHeight < 0)
         {
@@ -193,11 +216,13 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CalculateCurrentDistance()
     {
+        // Calculating Current Distance On X -- OGFormula: x = Vx * t
         _currentDistance = _initVelocityVx * _currentTime;
     }
 
     private void CalculateAngle()
     {
+        // Calculating Current Angle Of Projectile (Using the Tanget of currentVx & currentVy)
         if (LaunchAngle == 0)
         {
             _currentAngle = 0;
@@ -210,6 +235,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CheckReachedEnd()
     {
+        // Checking If Reached End Of Flight
         if (_currentDistance == _totalDistance && _currentTime == _timeOfFlight)
         {
             _reachedEndOfFlight = true;
@@ -219,6 +245,7 @@ public class ProjectileMotion : MonoBehaviour
     // External Factors
     private void CalculateWindVxVy()
     {
+        // Calculating Wind Vx & Vy (Using WindVelocity & WindAngle)
         if (WindAngle == 360 || WindAngle == 180)
         {
             _windVelocityVx = WindVelocity * Mathf.Cos(WindAngle * Mathf.Deg2Rad);
@@ -241,6 +268,7 @@ public class ProjectileMotion : MonoBehaviour
     // ---------------------
     private void RefreshInitText()
     {
+        // Refreshing Initial Values Text
         GravityAccelerationText.text = "Gravity Acceleration: " + GravityAcceleration + "m/s²";
         InitialVelocityText.text = "Initial Velocity: " + InitialVelocity + "m/s";
         InitialHeightText.text = "Initial Height: " + InitialHeight + "m";
@@ -257,6 +285,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void RefreshCurrentTextOnce()
     {
+        // Refreshing Current Text For Values That Get Calculated Once
         InitialVelocityVxText.text = "Initial Velocity Vx: " + _initVelocityVx + "m/s";
         InitialVelocityVyText.text = "Initial Velocity Vy: " + _initVelocityVy + "m/s";
         TimeOfFlightText.text = "Time Of Flight: " + _timeOfFlight + "s";
@@ -266,6 +295,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void RefreshCurrentTextAlways()
     {
+        // Refreshing Current Text For Always Calculated Values As Long As Projectile Flies
         CurrentHeightText.text = "Current Height: " + _currentHeight + "m";
         CurrentDistanceText.text = "Current Distance: " + _currentDistance + "m";
         CurrentAngleText.text = "Current Angle: " + _currentAngle + "°";
@@ -274,6 +304,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void RefreshTimeScaleText(float tScale)
     {
+        // Time Scale Text Refresh
         Time.timeScale = tScale;
         _timeScaleVal = tScale;
         TimeScaleText.text = _timeScaleVal.ToString("F2") + "x";
@@ -281,6 +312,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void RefreshArrowVisuals()
     {
+        // Refreshing Projectile Position & Rotation To Visualise Motion
         Arrow.transform.position = new Vector3(_currentDistance, _currentHeight, 0);
         Arrow.transform.rotation = Quaternion.Euler(new Vector3(0, 0, _currentAngle));
     }
@@ -288,6 +320,7 @@ public class ProjectileMotion : MonoBehaviour
     // External Factors
     private void RefreshWindIndicator()
     {
+        // Refreshing Wind Angle Indicator UI
         WindAngleIndicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, WindAngle));
     }
 
@@ -296,6 +329,7 @@ public class ProjectileMotion : MonoBehaviour
     // ---------------
     public void ToggleGameMode()
     {
+        // Accessed From ToggelGameMode Button
         if (MiniGameMode)
         {
             GameModeButtonText.text = "PLAYGROUND\nMODE";
@@ -310,6 +344,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void CheckGameMode()
     {
+        // What Happens With Specific GameMode
         if (MiniGameMode)
         {
             Target.SetActive(true);
@@ -326,6 +361,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void SendTargetToDestination()
     {
+        // Responsible Of Setting Target To Random Location According To Max Distance
         if (!_targetSet)
         {
             _targetDistance = Random.Range(5, MaxDistanceRange + 1);
@@ -337,6 +373,7 @@ public class ProjectileMotion : MonoBehaviour
 
     private void DidItHit()
     {
+        // Using New True Collision
         if (MiniGameMode && _reachedEndOfFlight && Arrow.GetComponent<CustomBoxCollider>().WasTriggered && Arrow.GetComponent<CustomBoxCollider>().ObjCollidedWithRef.gameObject == Target)
         {
             TargetHitWin = true;
@@ -351,6 +388,7 @@ public class ProjectileMotion : MonoBehaviour
             WinText.text = "GIT GUD";
         }
 
+        // Using Old "Fake Collision"
         //if (MiniGameMode && _reachedEndOfFlight && _currentDistance >= _targetDistance - 3 && _currentDistance <= _targetDistance + 3)
         //{
         //    TargetHitWin = true;
@@ -392,7 +430,7 @@ public class ProjectileMotion : MonoBehaviour
 #endif
     }
 
-    // Inputs
+    // UI Inputs
     // ---------------
     public void AngleInput(float d)
     {
@@ -411,7 +449,7 @@ public class ProjectileMotion : MonoBehaviour
         InitialHeight = float.Parse(s);
     }
 
-    // External Factors
+    // External Factors UI Inputs
     public void WindAngleInput(float d)
     {
         WindAngle = (int)d;
@@ -425,7 +463,7 @@ public class ProjectileMotion : MonoBehaviour
         WindVelocity = float.Parse(s);
     }
 
-    // Gamificacion
+    // Gamificacion UI Inputs
     public void InputMaxTargetDistance(string d)
     {
         MaxDistanceRange = (int)float.Parse(d);
